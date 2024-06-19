@@ -19,8 +19,25 @@ const row = (bill) => {
     `)
   }
 
+// const rows = (data) => {
+//   return (data && data.length) ? data.map(bill => row(bill)).join("") : ""
+// }
+
+// const rows = (data) => {
+//   if (data && data.length) {
+//     // Trier les factures par date de la plus récente à la plus ancienne
+//     data = data.sort((a, b) => new Date(b.date) - new Date(a.date));
+//     return data.map(bill => row(bill)).join("");
+//   }
+//   return "";
+// }
 const rows = (data) => {
-  return (data && data.length) ? data.map(bill => row(bill)).join("") : ""
+  return data && data.length 
+    ? data
+      .sort((a,b) => (new Date(a.date) < new Date(b.date) ? 1 : -1))
+      .map(bill => row(bill))
+      .join("")
+    : []
 }
 
 export default ({ data: bills, loading, error }) => {

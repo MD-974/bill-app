@@ -11,8 +11,11 @@ import {localStorageMock} from "../__mocks__/localStorage.js";
 import router from "../app/Router.js";
 
 describe("Given I am connected as an employee", () => {
+// "Étant donné que je suis connecté en tant qu'employé"
   describe("When I am on Bills Page", () => {
+    // "Quand je suis sur la page des factures"
     test("Then bill icon in vertical layout should be highlighted", async () => {
+      // "Alors l'icône de la facture dans la disposition verticale devrait être mise en surbrillance"
 
       Object.defineProperty(window, 'localStorage', { value: localStorageMock })
       window.localStorage.setItem('user', JSON.stringify({
@@ -29,11 +32,20 @@ describe("Given I am connected as an employee", () => {
 
     })
     test("Then bills should be ordered from earliest to latest", () => {
+      // "Alors les factures devraient être ordonnées de la plus ancienne à la plus récente"
       document.body.innerHTML = BillsUI({ data: bills })
+
+      // Extraction des dates des factures affichées "regex"
       const dates = screen.getAllByText(/^(19|20)\d\d[- /.](0[1-9]|1[012])[- /.](0[1-9]|[12][0-9]|3[01])$/i).map(a => a.innerHTML)
-      const antiChrono = (a, b) => ((a < b) ? 1 : -1)
+
+      // Fonction de comparaison pour trier les dates en ordre décroissant
+      const antiChrono = (a, b) => ((a > b) ? 1 : -1)
+      
+      // Trier les dates et comparer avec l'ordre original
       const datesSorted = [...dates].sort(antiChrono)
       expect(dates).toEqual(datesSorted)
+      
+      
     })
   })
 })
