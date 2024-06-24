@@ -15,12 +15,40 @@ export default class NewBill {
     this.billId = null
     new Logout({ document, localStorage, onNavigate })
   }
+
+
+  // handleChangeFile = e => {
+  //   e.preventDefault()
+  //   const file = this.document.querySelector(`input[data-testid="file"]`).files[0]
+  //   const filePath = e.target.value.split(/\\/g)
+  //   const fileName = filePath[filePath.length-1]
+  //   const formData = new FormData()
+  //   const email = JSON.parse(localStorage.getItem("user")).email
+  //   formData.append('file', file)
+  //   formData.append('email', email)
   handleChangeFile = e => {
     e.preventDefault()
-    const file = this.document.querySelector(`input[data-testid="file"]`).files[0]
+    const input = this.document.querySelector(`input[data-testid="file"]`)
+    const file = input.files[0]
+    
+    // TEST : Debug pour envoyer que les fichier avec l'extension .png, .jpeg ou .jpg à l'envoie du formulaire :
+    // Tableau des types MIME de fichiers autorisés
+    const fileTypes = ['image/jpeg', 'image/jpg', 'image/png'];
+
+    // Sélection de l'élément d'alerte
+    const fileAlert = document.getElementById('fileAlert')
+
+    // Vérifie si le type de fichier sélectionné n'est pas inclus dans les types autorisés
+    if (!fileTypes.includes(file.type)) {
+      // Si le type de fichier n'est pas autorisé, vide la valeur du champ de saisie
+      input.value = "";
+      // Renvoie false pour indiquer un échec dans le traitement
+      return false;
+    }
+
     const filePath = e.target.value.split(/\\/g)
     const fileName = filePath[filePath.length-1]
-    const formData = new FormData()
+    const formData = new FormData() 
     const email = JSON.parse(localStorage.getItem("user")).email
     formData.append('file', file)
     formData.append('email', email)
