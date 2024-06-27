@@ -28,12 +28,18 @@ export default class NewBill {
   //   formData.append('file', file)
   //   formData.append('email', email)
 
+
+
+
+  // --------------------------------------------------------------------- //
+  //                           code modifié                                //
+  // --------------------------------------------------------------------- //
   handleChangeFile = e => {
     e.preventDefault()
     const input = this.document.querySelector(`input[data-testid="file"]`)
     const file = input.files[0]
 
-    // TEST : Debug pour envoyer que les fichier avec l'extension .png, .jpeg ou .jpg à l'envoie du formulaire :
+    // Ajout des extensions autorisées .png, .jpeg ou .jpg
     // Tableau des types MIME de fichiers autorisés
     const fileTypes = ['image/jpeg', 'image/jpg', 'image/png']
 
@@ -53,6 +59,12 @@ export default class NewBill {
       // Masquer l'alerte si le format est correct
       fileAlert.style.display = 'none'
     }
+  // --------------------------------------------------------------------- //
+  //                           fin code modifié                            //
+  // --------------------------------------------------------------------- //
+
+
+
 
     // Si le format est correct, affiche le nom du fichier
     const filePath = e.target.value.split(/\\/g)

@@ -145,13 +145,27 @@ export default class {
       this.counter ++
     }
 
+    // Gestion du click d'une des cards
+    // bills.forEach(bill => {
+    //   $(`#open-bill${bill.id}`).click((e) => this.handleEditTicket(e, bill, bills))
+    // })
+
+
+    // --------------------------------------------------------------------------- //
+    //                             code modifier                                   //
+    // --------------------------------------------------------------------------- //
     bills.forEach(bill => {
-      $(`#open-bill${bill.id}`).click((e) => this.handleEditTicket(e, bill, bills))
+      // reinitialisation de la methode handeEdiTicket avec .off() sur le clic
+      $(`#open-bill${bill.id}`).off("click");
+      $(`#open-bill${bill.id}`).click((e) => this.handleEditTicket(e, bill, bills));
     })
-
     return bills
-
   }
+  // --------------------------------------------------------------------------- //
+  //                             fin code modifier                               //
+  // --------------------------------------------------------------------------- //
+
+
 
   getBillsAllUsers = () => {
     if (this.store) {

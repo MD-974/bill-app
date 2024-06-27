@@ -31,6 +31,10 @@ describe("Given I am connected as an employee", () => {
       //to-do write expect expression
 
     })
+    
+    // ----------------------------------------------------------------------- //
+    //                           code modifier                                 //
+    // ----------------------------------------------------------------------- //
     test("Then bills should be ordered from earliest to latest", () => {
       // "Alors les factures devraient être ordonnées de la plus ancienne à la plus récente"
       document.body.innerHTML = BillsUI({ data: bills })
@@ -40,14 +44,16 @@ describe("Given I am connected as an employee", () => {
 
       // Fonction de comparaison pour trier les dates en ordre décroissant
       // const antiChrono = (a, b) => ((a > b) ? 1 : -1)
-      
+
       // Fonction de comparaison pour trier les dates en ordre croissant
       const antiChrono = (a, b) => ((a < b) ? 1 : -1)
       
       // Trier les dates et comparer avec l'ordre original
       const datesSorted = [...dates].sort(antiChrono)
       expect(dates).toEqual(datesSorted)
-      
+      // ----------------------------------------------------------------------- //
+      //                         fin code modifier                               //
+      // ----------------------------------------------------------------------- //
       
     })
   })
