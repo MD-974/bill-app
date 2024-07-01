@@ -3,10 +3,14 @@
  */
 
 import {screen, waitFor} from "@testing-library/dom"
+
+import '@testing-library/jest-dom'
+
 import BillsUI from "../views/BillsUI.js"
 import { bills } from "../fixtures/bills.js"
 import { ROUTES_PATH} from "../constants/routes.js";
 import {localStorageMock} from "../__mocks__/localStorage.js";
+
 
 import router from "../app/Router.js";
 
@@ -14,6 +18,10 @@ describe("Given I am connected as an employee", () => {
 // "Étant donné que je suis connecté en tant qu'employé"
   describe("When I am on Bills Page", () => {
     // "Quand je suis sur la page des factures"
+
+    // ---------------------------------------------------------------------------- //
+    //                                TEST POUR ICON                                //
+    // ---------------------------------------------------------------------------- //
     test("Then bill icon in vertical layout should be highlighted", async () => {
       // "Alors l'icône de la facture dans la disposition verticale devrait être mise en surbrillance"
 
@@ -29,12 +37,13 @@ describe("Given I am connected as an employee", () => {
       await waitFor(() => screen.getByTestId('icon-window'))
       const windowIcon = screen.getByTestId('icon-window')
       //to-do write expect expression
-
+      expect(windowIcon.classList.contains("active-icon")).toBeTruthy()
     })
-    
-    // ----------------------------------------------------------------------- //
-    //                           code modifier                                 //
-    // ----------------------------------------------------------------------- //
+
+
+    // ---------------------------------------------------------------------------- //
+    //                                TRIES DES DATES                               //
+    // ---------------------------------------------------------------------------- //
     test("Then bills should be ordered from earliest to latest", () => {
       // "Alors les factures devraient être ordonnées de la plus ancienne à la plus récente"
       document.body.innerHTML = BillsUI({ data: bills })
@@ -52,9 +61,11 @@ describe("Given I am connected as an employee", () => {
       const datesSorted = [...dates].sort(antiChrono)
       expect(dates).toEqual(datesSorted)
       // ----------------------------------------------------------------------- //
-      //                         fin code modifier                               //
+      //                         FIN TRIES DES DATES                             //
       // ----------------------------------------------------------------------- //
-      
     })
+
+
+    // ---------------------------------------------------------------------------- //
   })
 })
