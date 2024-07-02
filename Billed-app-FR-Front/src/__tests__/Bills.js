@@ -11,20 +11,15 @@ import {localStorageMock} from "../__mocks__/localStorage.js";
 
 import Bills from "../containers/Bills.js";
 import router from "../app/Router.js";
+import mockStore from "../__mocks__/store";
 
 
 describe("Given I am connected as an employee", () => {
   // "Étant donné que je suis connecté en tant qu'employé"
   describe("When I am on Bills Page", () => {
   // "Quand je suis sur la page des factures"
-
-
-  // ---------------------------------------------------------------------------- //
-  //                                TEST POUR ICON                                //
-  // ---------------------------------------------------------------------------- //
     test("Then bill icon in vertical layout should be highlighted", async () => {
       // "Alors l'icône de la facture dans la disposition verticale devrait être mise en surbrillance"
-
       Object.defineProperty(window, 'localStorage', { value: localStorageMock })
       window.localStorage.setItem('user', JSON.stringify({
         type: 'Employee'
@@ -32,14 +27,11 @@ describe("Given I am connected as an employee", () => {
       const root = document.createElement("div")
       root.setAttribute("id", "root")
       document.body.append(root)
-
       // Appelle la fonction "router()"
       router()
-
       window.onNavigate(ROUTES_PATH.Bills)
       await waitFor(() => screen.getByTestId('icon-window'))
       const windowIcon = screen.getByTestId('icon-window')
-
       //to-do write expect expression
       // Vérifie que la classe "active-icon" est ajouté
       expect(windowIcon.classList.contains("active-icon")).toBeTruthy()
@@ -60,7 +52,6 @@ describe("Given I am connected as an employee", () => {
       const antiChrono = (a, b) => ((a < b) ? 1 : -1)
       // Tri des dates 
       const datesSorted = [...dates].sort(antiChrono)
-
       // Verification de l'ordre des dates par rapport "datesSorted"
       expect(dates).toEqual(datesSorted)
     })
@@ -86,5 +77,43 @@ describe("Given I am connected as an employee", () => {
         expect(screen.getByTestId('form-new-bill')).toBeTruthy()
       })
     })
+
+
+    // ---------------------------------------------------------------------------- //
+    //                               TEST MODAL BILLS                               //
+    // ---------------------------------------------------------------------------- //
+    describe ("When I click on 'icon-eye'", () => {
+    // Lorsque je clique sur l'icone 'eye'
+      test("Then I can open a modal by clicking on the eye icon", () => { 
+      // Alors je peux ouvrir une modale en cliquant sur l'icône 'eye' 
+      $.fn.modal = jest.fn()
+
+      const root = document.createElement("div")
+      root.setAttribute("id", "root")
+      document.body.append(root)
+      router()
+      window.onNavigate(ROUTES_PATH.Bills)
+
+      // Ajoutez une donnée de facture dans le tableau des factures pour le test.
+      const testDataBill = bills[0];
+      document.body.innerHTML = BillsUI({ data: [testDataBill] })
+      // Creation d'un objet Bills pour gérer l'affichage des factures.
+      const billsObject = new Bills({
+        document, onNavigate, store: mockStore, localStorage: window.localStorage
+      });
+      //Récupérez l'icône "icon-eye"
+      const iconEye = screen.getByTestId('icon-eye')
+      // Fonction de rappel pour ouvrir la modale
+      const openModale = jest.fn(billsObject.handleClickIconEye(iconEye))
+      //Ajout d'un écouteur d'événement pour le clic sur "icon-eye"
+      iconEye.addEventListener('click', openModale)
+      //Simulez le clic sur l'icône "icon-eye".
+      fireEvent.click(iconEye)
+      //Verification si la modale est ouverte
+      expect(openModale).toHaveBeenCalled()
+      })
+    })
+
+
   })
 })

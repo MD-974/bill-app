@@ -145,12 +145,6 @@ export default class {
       this.counter ++
     }
 
-    // Gestion du click d'une des cards
-    // bills.forEach(bill => {
-    //   $(`#open-bill${bill.id}`).click((e) => this.handleEditTicket(e, bill, bills))
-    // })
-
-
     // --------------------------------------------------------------------------- //
     //                             code modifier                                   //
     // --------------------------------------------------------------------------- //
@@ -164,8 +158,6 @@ export default class {
   // --------------------------------------------------------------------------- //
   //                             fin code modifier                               //
   // --------------------------------------------------------------------------- //
-
-
 
   getBillsAllUsers = () => {
     if (this.store) {
