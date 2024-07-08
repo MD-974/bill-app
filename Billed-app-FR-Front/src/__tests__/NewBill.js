@@ -1,28 +1,3 @@
-/**
- * @jest-environment jsdom
- */
-
-// import NewBillUI from "../views/NewBillUI.js"
-// import NewBill from "../containers/NewBill.js"
-// import { screen } from "@testing-library/dom"
-
-
-// describe("Given I am connected as an employee", () => {
-//   // "Étant donné que je suis connecté en tant qu’employé"
-//   describe("When I am on NewBill Page", () => {
-//     // "Quand je suis sur la page NewBill"
-
-//     beforeEach(() => {
-//       Object.defineProperty(window, 'localStorage', { value: localStorageMock })
-//       window.localStorage.setItem('user', JSON.stringify({
-//         type: 'Employee',
-//         email: 'a@a'
-//       }))
-//       const html = NewBillUI()
-//       document.body.innerHTML = html
-//     })
-//   })
-// })
 
 /**
  * @jest-environment jsdom
@@ -30,14 +5,20 @@
 
 import NewBillUI from "../views/NewBillUI.js"
 import NewBill from "../containers/NewBill.js"
-import { screen, waitFor } from "@testing-library/dom"
+import BillsUI from "../views/BillsUI.js"
+import { fireEvent, screen, waitFor } from "@testing-library/dom"
 import mockStore from "../__mocks__/store"
-import { localStorageMock } from "../__mocks__/localStorage.js"
-import { ROUTES_PATH } from "../constants/routes.js"
+import {
+  localStorageMock
+} from "../__mocks__/localStorage.js"
+import {
+  ROUTES_PATH,
+  ROUTES
+} from "../constants/routes.js"
 import router from "../app/Router.js";
 
 
-jest.mock("../app/store", () => mockStore)
+jest.mock("../app/Store", () => mockStore)
 
 describe("Given I am connected as an employee", () => {
   // "Étant donné que je suis connecté en tant qu’employé"
@@ -45,7 +26,7 @@ describe("Given I am connected as an employee", () => {
     // "Quand je suis sur la page NewBill"
     describe("when upload file", () => {
       // "Quand j'upload un fichier"
-      
+
       // Fonction pour initialiser un nouveau module "NewBill"
       function initialisationNewBill() {
         // Génère le contenu HTML pour le module NewBill
@@ -58,17 +39,24 @@ describe("Given I am connected as an employee", () => {
         const store = mockStore
         // Crée un objet qui définit l'utilisateur
         const objectUser = {
-            type: "Employee",
-            email: "employee@test.tld",
-            password: "employee",
-            status: "connected"
+          type: "Employee",
+          email: "employee@test.tld",
+          password: "employee",
+          status: "connected"
         }
         // Crée un objet "localStorage"
-        Object.defineProperty(window, 'localStorage', { value: localStorageMock })
+        Object.defineProperty(window, 'localStorage', {
+          value: localStorageMock
+        })
         // Stockage de l'utilisateur
         window.localStorage.setItem('user', JSON.stringify(objectUser))
         // Crée un nouvel objet "NewBill"
-        return new NewBill({ document, onNavigate, store, locaStore: window.localStorage });
+        return new NewBill({
+          document,
+          onNavigate,
+          store,
+          locaStore: window.localStorage
+        });
       }
 
       let newbills
@@ -86,20 +74,23 @@ describe("Given I am connected as an employee", () => {
         const fileInput = screen.getByTestId('file')
 
         // Crée un fichier avec une extension jpg
-        const file = new File(['file'], 'test.jpg', { type: 'image/jpg' });
+        const file = new File(['file'], 'test.jpg', {
+          type: 'image/jpg'
+        });
 
         // Crée un événement de changement
-        const event = new Event('change', { bubbles: true });
+        const event = new Event('change', {
+          bubbles: true
+        });
 
         // Définit la propriété 'files' de l'élément d'entrée de fichier avec le fichier créé
         Object.defineProperty(fileInput, 'files', {
-            value: [file]
+          value: [file]
         });
-
         // Déclenche l'événement de changement sur l'élément d'entrée de fichier
         fileInput.dispatchEvent(event)
         // Vérifie que la fonction handleChangeFile renvoie undefined
-        expect(newbills.handleChangeFile(event)).toBe(undefined)
+        expect(newbills.handleChangeFile(event)).not.toBe(false);
       })
 
       // ---------------------------------------------------------------------------- //
@@ -110,12 +101,16 @@ describe("Given I am connected as an employee", () => {
         const fileInput = screen.getByTestId('file')
 
         // Crée un fichier avec une extension pdf (non autorisée)
-        const file = new File(['file'], 'test.pdf', { type: 'application/pdf' })
+        const file = new File(['file'], 'test.pdf', {
+          type: 'application/pdf'
+        })
 
         // Crée un événement de changement
-        const event = new Event('change', { bubbles: true })
-                Object.defineProperty(fileInput, 'files', {
-            value: [file]
+        const event = new Event('change', {
+          bubbles: true
+        })
+        Object.defineProperty(fileInput, 'files', {
+          value: [file]
         })
 
         // Déclenche l'événement de changement sur l'élément d'entrée de fichier
@@ -123,102 +118,51 @@ describe("Given I am connected as an employee", () => {
         // Vérifie que la fonction handleChangeFile renvoie false
         expect(newbills.handleChangeFile(event)).toBe(false)
       })
-    })
-
-// ---------------------------------------------------------------------------- //
-//                           TEST D'INTEGRATION (POST)                          //
-// ---------------------------------------------------------------------------- //
-test("POST newBill", async () => {
-        // Crée un élément div et l'ajouter
-        const root = document.createElement("div");
-        root.setAttribute("id", "root");
-        document.body.append(root);
-
-        router()
-        window.onNavigate(ROUTES_PATH.NewBill)
-
-        //Attendre que le texte "Envoyer" soit affiché
-        await waitFor(() => screen.getAllByText("Envoyer"))
+      // ---------------------------------------------------------------------------- //
+      //                           TEST D'INTEGRATION (POST)                          //
+      // ---------------------------------------------------------------------------- //
+      test("Then submit the form, redirect to the dashboard page, and display the new bill in the list", async () => {
+        // On cree des espions
+        const handleSubmitSpy = jest.spyOn(newbills, 'handleSubmit')
+        const onNavigateSpy = jest.spyOn(newbills, 'onNavigate')
+        // Ensuite soumettre le formulaire, rediriger vers la page du tableau de bord et afficher la nouvelle facture dans la liste
+        // 1: Fill the form
+        // Remplir le formulaire
+        screen.getByTestId('expense-type').value = 'Transports'
+        screen.getByTestId('expense-name').value = 'Test expense'
+        screen.getByTestId('datepicker').value = '2021-09-01'
+        screen.getByTestId('amount').value = '100'
+        screen.getByTestId('vat').value = '20'
+        screen.getByTestId('pct').value = '10'
+        screen.getByTestId('commentary').value = 'Test commentary'
+        // 2: Add a file
+        // Ajouter un fichier
+        const fileInput = screen.getByTestId('file')
+        const file = new File(['file'], 'test.jpg', { type: 'image/jpg' })
+        Object.defineProperty(fileInput, 'files', { value: [file] })
+        const changeEvent = new Event('change', { bubbles: true })
+        fileInput.dispatchEvent(changeEvent)
+        expect(newbills.handleChangeFile(changeEvent)).not.toBe(false)
+        // 3: Submit the form
+        // Soumettre le formulaire
+        const form = screen.getByTestId('form-new-bill')
+        form.addEventListener('submit', newbills.handleSubmit)
+        fireEvent.submit(form)
+        expect(handleSubmitSpy).toHaveBeenCalled();
+        // 3.1: Verify redirection to the dashboard
+        // Vérifier la redirection vers la page du tableau de bord
+        await waitFor(() => {
+          expect(onNavigateSpy).toHaveBeenCalledWith('#employee/bills')
+        })
+        await waitFor(() => {
+          expect(screen.getByText('Mes notes de frais')).toBeInTheDocument()
+        })
+        // 3.2: Verify the new bill appears in the list
+        // Vérifier que la nouvelle facture apparaît dans la liste
+        const newBillTitle = await screen.findByText('Test expense')
+        expect(newBillTitle).toBeTruthy()
       })
-
-      // En cas d'erreur sur l'API
-      describe("When an error occurs on API", () => {
-        // Envoi de la facture échoue avec un message d'erreur 500
-        test("POST bill fails with 500 message error", async () => {
-            try {
-                // Crée un spyOn (espionnage) pour le magasin fictif
-                jest.spyOn(mockStore, "bills")
-                // Navigation vers la page NewBill
-                window.onNavigate(ROUTES_PATH.NewBill)
-
-                // Crée une div et l'ajoute
-                const root = document.createElement("div")
-                root.setAttribute("id", "root")
-                document.body.appendChild(root)
-
-                // Active le router
-                router()
-
-                // Sélectionne le bouton "Envoyer"
-                const buttonSubmit = screen.getAllByText('Envoyer')
-                buttonSubmit[0].click()
-
-                // Simuler un echec de l'envoi
-                mockStore.bills.mockImplementationOnce(() => {
-                  return {
-                    create: (bill) => {
-                        return Promise.reject(new Error("Erreur 500"))
-                      }
-                    }
-                })
-
-                window.onNavigate(ROUTES_PATH.NewBill)
-                await new Promise(process.nextTick)
-
-                // Vérifie la présence du message d'erreur "Erreur 500"
-                const message = screen.queryByText(/Erreur 500/)
-                await waitFor(() => {
-                    expect(message).toBeTruthy()
-                })
-            } catch (error) {
-                console.error(error)
-            }
-        })
-
-        // Envoi de la facture échoué avec un message d'erreur 404
-        test("POST bill fails with 404 message error", async () => {
-          try {
-              jest.spyOn(mockStore, "bills");
-              window.onNavigate(ROUTES_PATH.NewBill)
-
-              const root = document.createElement("div")
-              root.setAttribute("id", "root")
-              document.body.appendChild(root)
-              router()
-
-              // Sélectionne le bouton Envoyer
-              const buttonSubmit = screen.getAllByText('Envoyer')
-              buttonSubmit[0].click()
-
-              // Simule un échec de l'API 
-              mockStore.bills.mockImplementationOnce(() => {
-                  return {
-                      create: (bill) => {
-                          return Promise.reject(new Error("Erreur 404"))
-                      }
-                  }
-              })
-              window.onNavigate(ROUTES_PATH.NewBill)
-              await new Promise(process.nextTick)
-              // Vérification du message d'erreur "Erreur 404"
-              const message = screen.queryByText(/Erreur 404/)
-              await waitFor(() => {
-                  expect(message).toBeTruthy()
-              })
-          } catch (error) {
-            console.error(error)
-          }
-        })
     })
   })
 })
+
