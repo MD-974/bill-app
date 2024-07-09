@@ -123,7 +123,7 @@ describe("Given I am connected as an employee", () => {
     // ---------------------------------------------------------------------------- //
     //                            TEST D'INTEGRATION                                   //
     // ---------------------------------------------------------------------------- //
-    //test d'intégration GET
+
     // describe("Given I am connected as an employee", () => {
     //   // Lorsque je suis connecté en tant qu'employé 'Employee'
     //   describe("When I navigate to Dashboard", () => {
@@ -144,6 +144,7 @@ describe("Given I am connected as an employee", () => {
     //     })
     //   })
     // })
+    
     describe("Given I am connected as an employee", () => {
       // Lorsque je suis connecté en tant qu'employé
       beforeAll(() => {
