@@ -96,6 +96,7 @@ describe("Given I am connected as an employee", () => {
       // ---------------------------------------------------------------------------- //
       //                TEST FONCTIONNEL AVEC FICHIERS  NON AUTORISEES                //
       // ---------------------------------------------------------------------------- //
+      
       // Le fichier n'accepte pas d'extension autre que png, jpeg ou jpg
       test("Then the file don't accept other extension than png or jpeg or jpg", () => {
         const fileInput = screen.getByTestId('file')
@@ -121,6 +122,7 @@ describe("Given I am connected as an employee", () => {
       // ---------------------------------------------------------------------------- //
       //                           TEST D'INTEGRATION (POST)                          //
       // ---------------------------------------------------------------------------- //
+      
       test("Then submit the form, redirect to the dashboard page, and display the new bill in the list", async () => {
         // On cree des espions
         const handleSubmitSpy = jest.spyOn(newbills, 'handleSubmit')
