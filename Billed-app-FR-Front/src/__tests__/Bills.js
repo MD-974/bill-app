@@ -150,8 +150,8 @@ describe("Given I am connected as an employee", () => {
     // ---------------------------------------------------------------------------- //
     describe("Given I am connected as an employee", () => {
       // Lorsque je suis connecté en tant qu'employé
+
       beforeAll(() => {
-        // Setting up mocked localStorage and employee user with an email
         // Configuration d’un pseudo localStorage et d’un utilisateur employé avec un e-mail
         Object.defineProperty(window, 'localStorage', { value: localStorageMock })
         window.localStorage.setItem('user', JSON.stringify({ type: 'Employee', email: "a@a" }))
@@ -161,13 +161,13 @@ describe("Given I am connected as an employee", () => {
         // Lorsque je suis redirigé vers la page 'Bills'
         test("Then it fetches bills from mock API GET", async () => {
           // Alors j'obtiens les factures de l'API mocké
+
           const root = document.createElement("div")
           root.setAttribute("id", "root")
           document.body.append(root)
           router()
           window.onNavigate(ROUTES_PATH.Bills)
-    
-          //make sure Bills Page title appear
+
           //verification de l'existence du titre "Mes notes de frais"
           await waitFor(() => screen.getByText("Mes notes de frais"))
           expect(screen.getByText("Mes notes de frais")).toBeTruthy()
@@ -176,6 +176,7 @@ describe("Given I am connected as an employee", () => {
         describe("When an error occurs on API", () => {
           // Lorsque j'obtiens une erreur lors du passage d'une requête vers l'API
           beforeEach(() => {
+            // Espionne la méthode "bills" du mockStore
             jest.spyOn(mockStore, "bills")
     
             const root = document.createElement("div")
