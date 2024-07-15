@@ -3,14 +3,14 @@
  */
 
 import '@testing-library/jest-dom'
-import {screen, fireEvent, waitFor} from "@testing-library/dom"
+import { screen, fireEvent, waitFor } from "@testing-library/dom"
 import Bills from "../containers/Bills.js";
 import BillsUI from "../views/BillsUI.js"
 import { bills } from "../fixtures/bills.js"
-import {localStorageMock} from "../__mocks__/localStorage.js";
+import { localStorageMock } from "../__mocks__/localStorage.js";
 import mockStore from "../__mocks__/store";
 import router from "../app/Router.js";
-import { ROUTES_PATH} from "../constants/routes.js";
+import { ROUTES_PATH } from "../constants/routes.js";
 
 
 jest.mock("../app/store", () => mockStore);
@@ -19,14 +19,14 @@ jest.mock("../app/store", () => mockStore);
 describe("Given I am connected as an employee", () => {
   // "Étant donné que je suis connecté en tant qu'employé"
   describe("When I am on Bills Page", () => {
-  // "Quand je suis sur la page des factures"
+    // "Quand je suis sur la page des factures"
 
-  // ---------------------------------------------------------------------------- //
-  //                               TEST ACTIVE ICON                               //
-  // ---------------------------------------------------------------------------- //
+    // ---------------------------------------------------------------------------- //
+    //                               TEST ACTIVE ICON                               //
+    // ---------------------------------------------------------------------------- //
     test("Then bill icon in vertical layout should be highlighted", async () => {
       // "Alors l'icône de la facture dans la disposition verticale devrait être mise en surbrillance"
-      
+
       Object.defineProperty(window, 'localStorage', { value: localStorageMock })
       // Définit un utilisateur de type 'Employee' dans le localStorage
       window.localStorage.setItem('user', JSON.stringify({
@@ -48,12 +48,12 @@ describe("Given I am connected as an employee", () => {
       expect(windowIcon.classList.contains("active-icon")).toBeTruthy()
     })
 
-  // ---------------------------------------------------------------------------- //
-  //                               TEST DATE SORT                                 //
-  // ---------------------------------------------------------------------------- //
+    // ---------------------------------------------------------------------------- //
+    //                               TEST DATE SORT                                 //
+    // ---------------------------------------------------------------------------- //
     test("Then bills should be ordered from earliest to latest", () => {
       // "Alors les factures devraient être ordonnées de la plus ancienne à la plus récente"
-      
+
       // Ajoute le contenu HTML des factures à la page
       document.body.innerHTML = BillsUI({ data: bills })
 
@@ -63,18 +63,18 @@ describe("Given I am connected as an employee", () => {
 
       // Définition d'une fonction de tri pour les dates, de la plus récente à la plus ancienne
       const antiChrono = (a, b) => ((a < b) ? 1 : -1)
-      
+
       // Tri des dates extraites en utilisant la fonction de tri définie (antiChrono)
       const datesSorted = [...dates].sort(antiChrono)
-      
+
       // Verification de l'ordre des dates par rapport "datesSorted"
       expect(dates).toEqual(datesSorted)
     })
 
-  // ---------------------------------------------------------------------------- //
-  //                               TEST NEW BILLS                                 //
-  // ---------------------------------------------------------------------------- //
-    describe ("When I click on 'nouvelle note de frais'", () => {
+    // ---------------------------------------------------------------------------- //
+    //                               TEST NEW BILLS                                 //
+    // ---------------------------------------------------------------------------- //
+    describe("When I click on 'nouvelle note de frais'", () => {
       // Lorsque je clique sur la 'nouvelle note de frais'
       test("Then I am directed to the NewBill page", () => {
         // Alors je suis diréger vers la page NewBill
@@ -105,49 +105,49 @@ describe("Given I am connected as an employee", () => {
     // ---------------------------------------------------------------------------- //
     //                             TEST MODAL BILLS                                 //
     // ---------------------------------------------------------------------------- //
-    describe ("When I click on icon 'eye'", () => {
-    // Lorsque je clique sur l'icone 'eye'
-      test("Then I can open a modal by clicking on the eye icon", () => { 
-      // Alors je peux ouvrir une modale en cliquant sur l'icone 'eye' 
+    describe("When I click on icon 'eye'", () => {
+      // Lorsque je clique sur l'icone 'eye'
+      test("Then I can open a modal by clicking on the eye icon", () => {
+        // Alors je peux ouvrir une modale en cliquant sur l'icone 'eye' 
 
-      // Mock de la fonction modale de jQuery
-      $.fn.modal = jest.fn()
+        // Mock de la fonction modale de jQuery
+        $.fn.modal = jest.fn()
 
-      // Création et ajout de l'élément 'root' au corps du document
-      const root = document.createElement("div")
-      root.setAttribute("id", "root")
-      document.body.append(root)
+        // Création et ajout de l'élément 'root' au corps du document
+        const root = document.createElement("div")
+        root.setAttribute("id", "root")
+        document.body.append(root)
 
-      // Initialisation du routeur
-      router()
-      // Navigation vers la page des factures
-      window.onNavigate(ROUTES_PATH.Bills)
+        // Initialisation du routeur
+        router()
+        // Navigation vers la page des factures
+        window.onNavigate(ROUTES_PATH.Bills)
 
-      // Ajoutez une donnée de facture dans le tableau des factures pour le test.
-      const testDataBill = bills[0];
-      document.body.innerHTML = BillsUI({ data: [testDataBill] })
+        // Ajoutez une donnée de facture dans le tableau des factures pour le test.
+        const testDataBill = bills[0];
+        document.body.innerHTML = BillsUI({ data: [testDataBill] })
 
-      // Creation d'un objet Bills pour gérer l'affichage des factures.
-      const billsObject = new Bills({
-        document, onNavigate, store: mockStore, localStorage: window.localStorage
-      })
+        // Creation d'un objet Bills pour gérer l'affichage des factures.
+        const billsObject = new Bills({
+          document, onNavigate, store: mockStore, localStorage: window.localStorage
+        })
 
-      //Récupérez l'icône "icon-eye"
-      const iconEye = screen.getByTestId('icon-eye')
-      // Fonction de rappel pour ouvrir la modale
-      const openModale = jest.fn(billsObject.handleClickIconEye(iconEye))
-      //Ajout d'un écouteur d'événement pour le clic sur "icon-eye"
-      iconEye.addEventListener('click', openModale)
-      //Simulez le clic sur l'icône "icon-eye".
-      fireEvent.click(iconEye)
-      //Verification si la modale est ouverte
-      expect(openModale).toHaveBeenCalled()
+        //Récupérez l'icône "icon-eye"
+        const iconEye = screen.getByTestId('icon-eye')
+        // Fonction de rappel pour ouvrir la modale
+        const openModale = jest.fn(billsObject.handleClickIconEye(iconEye))
+        //Ajout d'un écouteur d'événement pour le clic sur "icon-eye"
+        iconEye.addEventListener('click', openModale)
+        //Simulez le clic sur l'icône "icon-eye".
+        fireEvent.click(iconEye)
+        //Verification si la modale est ouverte
+        expect(openModale).toHaveBeenCalled()
       })
     })
 
-    // ---------------------------------------------------------------------------- //
-    //                            TEST D'INTEGRATION                                   //
-    // ---------------------------------------------------------------------------- //
+    // ******************************************************************************* //
+    // **                         TEST D'INTEGRATION                                ** //
+    // ******************************************************************************* //
     describe("Given I am connected as an employee", () => {
       // Lorsque je suis connecté en tant qu'employé
 
@@ -156,7 +156,7 @@ describe("Given I am connected as an employee", () => {
         Object.defineProperty(window, 'localStorage', { value: localStorageMock })
         window.localStorage.setItem('user', JSON.stringify({ type: 'Employee', email: "a@a" }))
       })
-    
+
       describe("When I get redirected to the Bills Page", () => {
         // Lorsque je suis redirigé vers la page 'Bills'
         test("Then it fetches bills from mock API GET", async () => {
@@ -172,21 +172,21 @@ describe("Given I am connected as an employee", () => {
           await waitFor(() => screen.getByText("Mes notes de frais"))
           expect(screen.getByText("Mes notes de frais")).toBeTruthy()
         })
-    
+
         describe("When an error occurs on API", () => {
           // Lorsque j'obtiens une erreur lors du passage d'une requête vers l'API
           beforeEach(() => {
             // Espionne la méthode "bills" du mockStore
             jest.spyOn(mockStore, "bills")
-    
+
             const root = document.createElement("div")
             root.setAttribute("id", "root")
             document.body.appendChild(root)
             router()
           })
-    
+
           test("Then it try to fetch bills from an API and fails with 404 message error", async () => {
-              // Alors j'obtiens une erreur 404 lors du passage d'une requête vers l'API
+            // Alors j'obtiens une erreur 404 lors du passage d'une requête vers l'API
             mockStore.bills.mockImplementationOnce(() => {
               return {
                 list: () => {
@@ -199,9 +199,9 @@ describe("Given I am connected as an employee", () => {
             const message = screen.getByText(/Erreur 404/)
             expect(message).toBeTruthy()
           })
-  // --------------------------- DOUBLON DU TEST 404 POUR LE 500 ------------------------- //
-  //                               DOUBLON DU TEST 404                                //
-  // -------------------------------------------------------------------------------- //
+          // --------------------------- DOUBLON DU TEST 404 POUR LE 500 ------------------------- //
+          //                               DOUBLON DU TEST 404                                //
+          // -------------------------------------------------------------------------------- //
           // test("fetches messages from an API and fails with 500 message error", async () => {
           //     // Alors j'obtiens une erreur 500 lors du passage d'une requête vers l'API
           //   mockStore.bills.mockImplementationOnce(() => {
@@ -216,12 +216,9 @@ describe("Given I am connected as an employee", () => {
           //   const message = screen.getByText(/Erreur 500/)
           //   expect(message).toBeTruthy()
           // })
-// -------------------------------------------------------------------------------- //
+          // -------------------------------------------------------------------------------- //
         })
       })
     })
   })
 })
-
-
-
